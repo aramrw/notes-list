@@ -23,7 +23,7 @@ export default function DeletedNotesModal({
 }) {
   function DeletedNoteItem({ note, index }: { note: NoteType; index: number }) {
     return (
-      <ul class="w-full h-fit flex flex-row justify-center items-center gap-2 outline rounded-sm py-0.5 px-2 bg-zinc-900">
+      <ul class="w-full h-fit flex flex-row justify-center items-center gap-2 outline rounded-md py-0.5 px-2 bg-zinc-900">
         <li class="w-full text-lg flex flex-row justify-between items-center gap-2">
           <div class="max-w-28 flex flex-row justify-self-start items-center gap-1.5 overflow-x-hidden text-nowrap">
             <span class="text-xs bg-zinc-800 rounded-md font-medium px-0.5">

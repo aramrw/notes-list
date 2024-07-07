@@ -113,12 +113,12 @@ const Newtab = () => {
 
   function Nav() {
     return (
-      <nav class="mb-5 mt-2 w-full">
+      <nav class="mb-5 mt-0.5 w-full border-b-2 border-b-zinc-700 py-1 pb-1.5 shadow-lg">
         <menu class="flex flex-row justify-between items-center gap-2">
           <li class="w-fit">
             <div class="flex h-full flex-col justify-center items-center">
               <ArchiveIcon
-                class="hover:opacity-70 cursor-pointer size-9 bg-zinc-500 rounded-md ml-2 p-1"
+                class="hover:opacity-70 cursor-pointer size-8 bg-zinc-500 rounded-md ml-2"
                 onClick={() => {
                   setIsShowModal((prev) => !prev);
                 }}

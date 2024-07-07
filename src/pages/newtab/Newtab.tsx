@@ -185,7 +185,7 @@ const Newtab = () => {
 
   function renderNotes() {
     return notes().length > 0 ? (
-      <ul class="flex flex-col gap-2 justify-start items-start py-1">
+      <ul class="grid lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 py-1 md:grid-cols-2 grid-cols-1">
         {notes().map((note, _index) => (
           <ListItem note={note} deleteNotes={deleteNotes} index={_index} />
         ))}

@@ -1,7 +1,7 @@
 import "@src/styles/index.css";
 import styles from "./Newtab.module.css";
 import ListItem from "./components/list-item";
-import { createSignal, onMount, Accessor, Setter } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { saveNoteToStorage } from "../background";
 //import { rejects } from "assert";
 //import Archive from "./components/icons/archive";
@@ -114,11 +114,11 @@ const Newtab = () => {
   function Nav() {
     return (
       <nav class="mb-5 mt-2 w-full">
-        <menu class="flex flex-row justify-between items-center gap-2 pl-0.5">
+        <menu class="flex flex-row justify-between items-center gap-2">
           <li class="w-fit">
             <div class="flex h-full flex-col justify-center items-center">
               <ArchiveIcon
-                class="hover:opacity-70 cursor-pointer size-9"
+                class="hover:opacity-70 cursor-pointer size-9 bg-zinc-500 rounded-md ml-2 p-1"
                 onClick={() => {
                   setIsShowModal((prev) => !prev);
                 }}

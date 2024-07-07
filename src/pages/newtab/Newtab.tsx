@@ -113,7 +113,7 @@ const Newtab = () => {
 
   function Nav() {
     return (
-      <nav class="mb-20 mt-2 w-full">
+      <nav class="mb-5 mt-2 w-full">
         <menu class="flex flex-row justify-between items-center gap-2 pl-0.5">
           <li class="w-fit">
             <div class="flex h-full flex-col justify-center items-center">
@@ -185,7 +185,7 @@ const Newtab = () => {
 
   function renderNotes() {
     return notes().length > 0 ? (
-      <ul class="flex flex-col gap-2 justify-start items-start">
+      <ul class="flex flex-col gap-2 justify-start items-start py-1">
         {notes().map((note, _index) => (
           <ListItem note={note} deleteNotes={deleteNotes} index={_index} />
         ))}
@@ -199,7 +199,7 @@ const Newtab = () => {
     <div class={styles.App}>
       <header class={styles.header}>
         <Nav />
-        <ul class="flex flex-row justify-self-center items-between h-full w-full max-h-[39rem] overflow-y-auto px-5 py-2">
+        <ul class="flex flex-row justify-self-center items-between h-full w-full max-h-[43rem] overflow-y-auto">
           <li class="w-fit">
             {isShowModal() && (
               <DeletedNotesModal

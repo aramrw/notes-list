@@ -87,7 +87,7 @@ const Newtab = () => {
   }
 
   async function get10Notes() {
-    return new Promise<NoteType[]>((resolve, reject) => {
+    return new Promise<NoteType[]>((resolve, _reject) => {
       chrome.storage.local.get("notes", (result) => {
         const currentNotes: NoteType[] = result.notes || [];
         resolve(currentNotes.slice(0, 10));
@@ -113,12 +113,12 @@ const Newtab = () => {
 
   function Nav() {
     return (
-      <nav class="mb-5 mt-0.5 w-full border-b-2 border-b-zinc-700 py-1 pb-1.5 shadow-lg">
+      <nav class="mb-5 mt-0.5 w-full border-b border-b-zinc-700 py-1 pb-1.5 shadow-lg">
         <menu class="flex flex-row justify-between items-center gap-2">
           <li class="w-fit">
             <div class="flex h-full flex-col justify-center items-center">
               <ArchiveIcon
-                class="hover:opacity-70 cursor-pointer size-8 bg-zinc-500 rounded-md ml-2"
+                class="hover:opacity-70 cursor-pointer size-8 bg-zinc-900 rounded-sm ml-2 p-1 outline outline-zinc-700"
                 onClick={() => {
                   setIsShowModal((prev) => !prev);
                 }}
@@ -132,12 +132,12 @@ const Newtab = () => {
             <li class="text-base">
               <button
                 onClick={copyNotes}
-                class="font-medium bg-zinc-400 rounded-md px-2 text-base hover:opacity-80"
+                class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 outline outline-zinc-700"
               >
                 Copy
               </button>
             </li>
-            <li class="text-base">
+            <li class="text-base font-medium opacity-20 select-none">
               <span>{notes().length}</span> notes
             </li>
           </div>
@@ -160,8 +160,8 @@ const Newtab = () => {
           onInput={(e) => {
             setNewNote({ text: e.target.value, timestamp: Date.now() });
           }}
-          placeholder={"Enter Word..."}
-          class="font-medium border rounded-md px-2 h-fit text-black text-base text-center"
+          placeholder={"入力..."}
+          class="font-medium border rounded-sm px-2 h-fit text-black text-base text-center bg-zinc-100 outline outline-2 outline-zinc-600"
         />
         <button
           onClick={(e) => {
@@ -175,7 +175,7 @@ const Newtab = () => {
               setNewNote({ text: "", timestamp: Date.now() });
             }
           }}
-          class="font-medium bg-zinc-500 rounded-md px-2 text-base hover:opacity-80"
+          class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 outline outline-zinc-700"
         >
           + New
         </button>

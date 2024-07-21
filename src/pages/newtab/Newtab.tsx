@@ -113,7 +113,7 @@ const Newtab = () => {
 
   function Nav() {
     return (
-      <nav class="mb-5 mt-0.5 w-full border-b border-b-zinc-700 py-1 pb-1.5 shadow-lg">
+      <nav class="mb-5 mt-0.5 w-full border-b border-b-zinc-700 py-1 pb-1.5 shadow-lg bg-zinc-900">
         <menu class="flex flex-row justify-between items-center gap-2">
           <li class="w-fit">
             <div class="flex h-full flex-col justify-center items-center">

@@ -12,9 +12,9 @@ export default function ListItem({
   deleteNotes: (notesToDelete: NoteType[]) => void;
 }) {
   return (
-    <ul class="max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 outline rounded-lg py-0.5 px-2 bg-zinc-900">
+    <ul class="max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 outline outline-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900">
       <li>
-        <span class="text-xs bg-zinc-800 rounded-md font-medium px-0.5">
+        <span class="text-xs bg-zinc-800 font-medium px-0.5 h-fit w-fit rounded-sm outline outline-zinc-700 select-none">
           {index}.
         </span>
       </li>
@@ -22,7 +22,7 @@ export default function ListItem({
         <span>{note.text}</span>
       </li>
       <li
-        class="hover:opacity-70 cursor-pointer bg-zinc-700 rounded-sm pb-0.5"
+        class="hover:opacity-70 cursor-pointer bg-zinc-800 rounded-sm outline outline-zinc-700"
         onClick={() => deleteNotes([note])}
       >
         <TrashIcon />

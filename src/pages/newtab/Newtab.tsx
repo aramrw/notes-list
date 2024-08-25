@@ -1,7 +1,7 @@
 import "@src/styles/index.css";
 import styles from "./Newtab.module.css";
 import ListItem from "./components/list-item";
-import { createSignal, onMount } from "solid-js";
+import { Accessor, createSignal, onMount, Setter } from "solid-js";
 import { saveNoteToStorage } from "../background";
 //import { rejects } from "assert";
 //import Archive from "./components/icons/archive";
@@ -9,11 +9,41 @@ import ArchiveIcon from "./components/icons/archive";
 import DeletedNotesModal, {
   fetchDeletedNotes,
 } from "./components/deleted-notes-modal";
+import { exportData } from "./utils/export-data";
+import { importData } from "./utils/import-data";
 
 export type NoteType = {
   text: string;
   timestamp: number;
 };
+
+export function handleAddNote({
+  newNote,
+  prevNotes,
+  setNotes,
+}: {
+  newNote: NoteType;
+  prevNotes: Accessor<NoteType[]>;
+  setNotes: Setter<NoteType[]>;
+}) {
+  if (newNote) {
+    for (const note of prevNotes()) {
+      if (note.text === newNote.text) {
+        return;
+      }
+    }
+    newNote.text = newNote.text.trim();
+    saveNoteToStorage(newNote.text)
+      .then(() => {
+        setNotes((prev) => [...prev, newNote]);
+      })
+      .catch((e) => {
+        if (e !== "Not Important") {
+          console.error(e);
+        }
+      });
+  }
+}
 
 const Newtab = () => {
   const [notes, setNotes] = createSignal<NoteType[]>([]);
@@ -41,7 +71,7 @@ const Newtab = () => {
     });
   }
 
-  async function deleteNotes(notesToDelete: NoteType[]) {
+  async function deleteNotesFromDB(notesToDelete: NoteType[]) {
     chrome.storage.local.get("notes", (result) => {
       const currentNotes = result.notes || [];
       const newNotes: NoteType[] = currentNotes.filter(
@@ -56,7 +86,7 @@ const Newtab = () => {
       const deletedNotes: NoteType[] = res.deleted || [];
       deletedNotes.push(...notesToDelete);
       chrome.storage.local.set({ deleted: deletedNotes });
-      setDeletedNotes((prev) => [...prev, ...deletedNotes]);
+      setDeletedNotes(deletedNotes);
     });
   }
 
@@ -69,21 +99,6 @@ const Newtab = () => {
       chrome.storage.local.set({ deleted: deletedNotes });
       setDeletedNotes(deletedNotes);
     });
-  }
-
-  function handleAddNote({ newNote }: { newNote: NoteType }) {
-    if (newNote) {
-      newNote.text = newNote.text.trim();
-      saveNoteToStorage(newNote.text)
-        .then(() => {
-          setNotes((prev) => [...prev, newNote]);
-        })
-        .catch((e) => {
-          if (e !== "Not Important") {
-            console.error(e);
-          }
-        });
-    }
   }
 
   async function get10Notes() {
@@ -108,17 +123,17 @@ const Newtab = () => {
     await navigator.clipboard.writeText(notes_linebroken_string);
 
     // delete notes after copying
-    deleteNotes(newNotes);
+    deleteNotesFromDB(newNotes);
   }
 
   function Nav() {
     return (
-      <nav class="mb-5 mt-0.5 w-full border-b border-b-zinc-700 py-1 pb-1.5 shadow-lg bg-zinc-900">
-        <menu class="flex flex-row justify-between items-center gap-2">
+      <nav class="mb-5 mt-0.5 w-full border-b border-b-zinc-700 py-1 pb-1.5 shadow-lg bg-zinc-900 px-3">
+        <menu class="flex flex-row justify-between items-center gap-2 w-full">
           <li class="w-fit">
             <div class="flex h-full flex-col justify-center items-center">
               <ArchiveIcon
-                class="hover:opacity-70 cursor-pointer size-8 bg-zinc-900 rounded-sm ml-2 p-1 outline outline-zinc-700"
+                class="hover:opacity-70 cursor-pointer size-8 bg-zinc-900 rounded-sm p-1 border-2 border-zinc-700"
                 onClick={() => {
                   setIsShowModal((prev) => !prev);
                 }}
@@ -132,7 +147,7 @@ const Newtab = () => {
             <li class="text-base">
               <button
                 onClick={copyNotes}
-                class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 outline outline-zinc-700"
+                class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 border-2 border-zinc-700"
               >
                 Copy
               </button>
@@ -141,8 +156,34 @@ const Newtab = () => {
               <span>{notes().length}</span> notes
             </li>
           </div>
+          <li class="w-fit">
+            <ImportExportSection />
+          </li>
         </menu>
       </nav>
+    );
+  }
+
+  function ImportExportSection() {
+    return (
+      <div class="flex flex-row gap-2 items-center w-full">
+        <button
+          onClick={(e) =>
+            importData().then((imported) => {
+              setNotes((prev) => [...prev, ...imported]);
+            })
+          }
+          class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 border-2 border-zinc-700"
+        >
+          Import
+        </button>
+        <button
+          onClick={(e) => exportData()}
+          class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 border-2 border-zinc-700"
+        >
+          Export
+        </button>
+      </div>
     );
   }
 
@@ -161,21 +202,21 @@ const Newtab = () => {
             setNewNote({ text: e.target.value, timestamp: Date.now() });
           }}
           placeholder={"入力..."}
-          class="font-medium border rounded-sm px-2 h-fit text-black text-base text-center bg-zinc-100 outline outline-2 outline-zinc-600"
+          class="font-medium rounded-sm px-2 h-fit text-black text-base text-center bg-zinc-100 border-2 border-zinc-600 focus-visible:border-zinc-100"
         />
         <button
           onClick={(e) => {
-						e.currentTarget
-            handleAddNote({ newNote: newNote() });
+            e.currentTarget;
+            handleAddNote({ newNote: newNote(), prevNotes: notes, setNotes });
             setNewNote({ text: "", timestamp: Date.now() });
           }}
           onKeyDown={(event) => {
             if (event.key == "Enter") {
-              handleAddNote({ newNote: newNote() });
+              handleAddNote({ newNote: newNote(), prevNotes: notes, setNotes });
               setNewNote({ text: "", timestamp: Date.now() });
             }
           }}
-          class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 outline outline-zinc-700"
+          class="font-medium bg-zinc-900 rounded-sm px-2 text-base hover:opacity-90 border-2 border-zinc-700"
         >
           + New
         </button>
@@ -187,7 +228,11 @@ const Newtab = () => {
     return notes().length > 0 ? (
       <ul class="grid lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 py-1 md:grid-cols-2 grid-cols-1">
         {notes().map((note, _index) => (
-          <ListItem note={note} deleteNotes={deleteNotes} index={_index} />
+          <ListItem
+            note={note}
+            deleteNotes={deleteNotesFromDB}
+            index={_index}
+          />
         ))}
       </ul>
     ) : (
@@ -203,8 +248,11 @@ const Newtab = () => {
           <li class="w-fit">
             {isShowModal() && (
               <DeletedNotesModal
+                currentNotes={notes}
                 deletedNotes={deletedNotes}
+                setDeletedNotes={setDeletedNotes}
                 deleteNotesForever={deleteNotesForever}
+                setNotes={setNotes}
               />
             )}
           </li>

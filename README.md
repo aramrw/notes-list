@@ -1,8 +1,8 @@
 ### Extension
-#### Default Shortcuts
+### Default Shortcuts
 - Save Selected Text
   - `Ctrl` + `Shift` + `Y`
-#### Contribute / Build From Source
+### Contribute / Build From Source
 ```
 npm i
 npm run build

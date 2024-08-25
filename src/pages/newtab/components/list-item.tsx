@@ -1,6 +1,10 @@
 import "@src/styles/index.css";
 import TrashIcon from "./icons/trash";
 import { NoteType } from "../Newtab";
+import { updateNoteInStorage } from "../utils/update-note-in-storage";
+import { createEffect, createSignal } from "solid-js";
+import { cn } from "@src/lib/utils";
+import clsx from "clsx";
 
 export default function ListItem({
   note,
@@ -11,22 +15,83 @@ export default function ListItem({
   index: number;
   deleteNotes: (notesToDelete: NoteType[]) => void;
 }) {
+  const [isDisabled, setIsDisabled] = createSignal<boolean>(true);
+  const [isCopied, setIsCopied] = createSignal<boolean>(false);
+  const [isConfirmedChange, setIsConfirmedChange] =
+    createSignal<boolean>(false);
+
+  createEffect(() => {
+    if (isConfirmedChange()) {
+      setTimeout(() => {
+        setIsConfirmedChange(false);
+      }, 1500);
+    } else if (isCopied()) {
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 750);
+    }
+  });
+
   return (
-    <ul class="max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 outline outline-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900">
-      <li>
-        <span class="text-xs bg-zinc-800 font-medium px-0.5 h-fit w-fit rounded-sm outline outline-zinc-700 select-none">
-          {index}.
-        </span>
-      </li>
-      <li class="text-nowrap overflow-hidden">
-        <span>{note.text}</span>
-      </li>
-      <li
-        class="hover:opacity-70 cursor-pointer bg-zinc-800 rounded-sm outline outline-zinc-700"
-        onClick={() => deleteNotes([note])}
+    <div class="relative flex items-center">
+      {isCopied() && (
+        <div class="absolute top-0 left-0 animate-pulse text-xs pl-1 text-gray-500 font-medium">
+          copied
+        </div>
+      )}
+      <ul
+        class={clsx(
+          "max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 border-2 border-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
+          !isDisabled() && "border-blue-400",
+          isConfirmedChange() && "border-green-400 animate-pulse"
+        )}
+        onClick={() => {
+          setTimeout(() => {
+            if (isDisabled()) {
+              setIsCopied(true);
+              navigator.clipboard.writeText(note.text);
+            }
+          }, 250);
+        }}
       >
-        <TrashIcon />
-      </li>
-    </ul>
+        <li>
+          <span class="text-xs bg-zinc-800 font-medium px-0.5 h-fit w-fit rounded-sm border-2 border-zinc-700 select-none">
+            {index}.
+          </span>
+        </li>
+        <li
+          class="text-nowrap overflow-hidden select-none animate-in cursor-pointer"
+          onDblClick={() => {
+            setIsDisabled(false);
+          }}
+          onMouseLeave={() => setIsDisabled(true)}
+        >
+          <input
+            class={cn(
+              "bg-zinc-900 text-white text-center max-w-44 outline-none cursor-pointer"
+            )}
+            value={note.text}
+            readOnly={isDisabled()}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === "Enter") {
+                let text = (e.currentTarget as HTMLInputElement).value;
+                let newNote: NoteType = { text, timestamp: Date.now() };
+                updateNoteInStorage(note, newNote);
+                setIsDisabled(true);
+                navigator.clipboard.writeText(note.text);
+                setIsCopied(true);
+                setIsConfirmedChange(true);
+              }
+            }}
+          />
+        </li>
+        <li
+          class="cursor-pointer bg-zinc-800 rounded-sm border-2 border-zinc-700 hover:border-red-800 "
+          onClick={() => deleteNotes([note])}
+        >
+          <TrashIcon />
+        </li>
+      </ul>
+    </div>
   );
 }

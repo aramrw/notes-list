@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /*
   1. Use a more-intuitive box-sizing model.
 */
@@ -9,6 +10,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+	font-family: "sans"
 }
 /*
   2. Remove default margin
@@ -156,6 +158,11 @@ h6 {
 
     --radius: 0.5rem;
   }
+}
+
+h1, h2, label {
+	pointer-events: none;
+	user-select: none;
 }
 
 @layer base {

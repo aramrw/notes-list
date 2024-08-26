@@ -1,37 +1,39 @@
 .App {
-    text-align: center;
+  text-align: center;
 }
 
 .header {
-    background-color: #151515;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    font-size: calc(10px + 2vmin);
-    color: white;
+  background-color: #151515;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
 .link {
-    color: #b318f0;
+  color: #b318f0;
 }
 
-::-webkit-scrollbar {
-  width: 7px;
+:root {
+  scrollbar-color: rgb(80, 80, 80) rgb(43, 43, 43);
+  scrollbar-width: 7px;
 }
 
-::-webkit-scrollbar-track {
-  background: #444;
-	border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2b2b2b;
-	border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #212121;
-	
-}
+/* ::-webkit-scrollbar { */
+/*   width: 7px !important; */
+/* } */
+/**/
+/* ::-webkit-scrollbar-track { */
+/*   background: #444 !important; */
+/* } */
+/**/
+/* ::-webkit-scrollbar-thumb { */
+/*   background: #2b2b2b !important; */
+/* } */
+/**/
+/* ::-webkit-scrollbar-thumb:hover { */
+/*   background: #212121 !important; */
+/* } */

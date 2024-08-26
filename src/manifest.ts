@@ -15,8 +15,9 @@ const manifest = defineManifest(async () => ({
   description: packageJson.description,
   options_page: "src/pages/options/index.html",
   background: {
-    service_worker: "src/pages/background/index.ts",
     scripts: ["src/pages/background/index.ts"],
+    service_worker: "src/pages/background/index.ts",
+    type: "module",
   },
   permissions: [
     "contextMenus",

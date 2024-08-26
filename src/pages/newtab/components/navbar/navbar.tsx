@@ -1,8 +1,9 @@
-import { cn } from "@src/lib/utils";
+import clsx from "clsx";
 import { Accessor, Setter } from "solid-js";
 import { NoteType } from "../../Newtab";
 import copyNotes from "../../utils/copy-notes";
 import ArchiveIcon from "../icons/archive";
+import GearIcon from "../icons/gear";
 import AddNoteSection from "./add-notes-sections";
 import ImportExportSection from "./import-export-section";
 
@@ -24,13 +25,14 @@ export default function Nav({
       <menu class="flex flex-row justify-between items-center gap-2 w-full">
         <li class="w-fit flex h-full flex-col justify-center items-center">
           <ArchiveIcon
-            class={cn(
-              "hover:opacity-70 cursor-pointer size-8 bg-zinc-900 rounded-sm p-1 border border-zinc-700"
+            class={clsx(
+              "hover:opacity-70 cursor-pointer size-8 bg-zinc-900 rounded-sm p-0.5 border border-zinc-700"
               // deletedNotes.length === 0 && "hover:opacity-50 cursor-not-allowed opacity-50"
             )}
             onClick={() => {
               if (deletedNotes().length === 0) {
-                return;
+                setIsShowModal(false);
+								return;
               }
               setIsShowModal((prev) => !prev);
             }}
@@ -54,6 +56,16 @@ export default function Nav({
         </div>
         <li class="w-fit">
           <ImportExportSection setNotes={setNotes} />
+        </li>
+        <li
+          class="w-fit flex h-full flex-col justify-center items-center"
+          onClick={() => chrome.runtime.openOptionsPage()}
+        >
+          <GearIcon
+            class={clsx(
+              "hover:opacity-70 cursor-pointer size-8 bg-zinc-900 rounded-sm p-0.5 border border-zinc-700"
+            )}
+          />
         </li>
       </menu>
     </nav>

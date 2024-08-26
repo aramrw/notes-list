@@ -1,5 +1,6 @@
 import { crx } from "@crxjs/vite-plugin";
 import { resolve } from "path";
+import makeManifest from "./utils/plugins/make-manifest"
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import WindiCSS from "vite-plugin-windicss";

@@ -2,23 +2,32 @@ import "@src/styles/index.css";
 import TrashIcon from "./icons/trash";
 import { NoteType } from "../Newtab";
 import { updateNoteInStorage } from "../utils/update-note-in-storage";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, Setter } from "solid-js";
 import { cn } from "@src/lib/utils";
 import clsx from "clsx";
 
 export default function ListItem({
   note,
   index,
+  setNotes,
   deleteNotes,
+  setDeletedNotes,
 }: {
   note: NoteType;
   index: number;
-  deleteNotes: (notesToDelete: NoteType[]) => void;
+  setNotes: Setter<NoteType[]>;
+  setDeletedNotes: Setter<NoteType[]>;
+  deleteNotes: (
+    notesToDelete: NoteType[],
+    setNotes: Setter<NoteType[]>,
+    setDeletedNotes: Setter<NoteType[]>
+  ) => Promise<void>;
 }) {
   const [isDisabled, setIsDisabled] = createSignal<boolean>(true);
   const [isCopied, setIsCopied] = createSignal<boolean>(false);
   const [isConfirmedChange, setIsConfirmedChange] =
     createSignal<boolean>(false);
+  const [isHoverDelete, setIsHoverDelete] = createSignal<boolean>(false);
 
   createEffect(() => {
     if (isConfirmedChange()) {
@@ -41,9 +50,10 @@ export default function ListItem({
       )}
       <ul
         class={clsx(
-          "max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 border-2 border-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
+          "max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 border border-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
           !isDisabled() && "border-blue-400",
-          isConfirmedChange() && "border-green-400 animate-pulse"
+          isConfirmedChange() && "border-green-400 animate-pulse",
+          isHoverDelete() && "border-red-800"
         )}
         onClick={() => {
           setTimeout(() => {
@@ -55,7 +65,7 @@ export default function ListItem({
         }}
       >
         <li>
-          <span class="text-xs bg-zinc-800 font-medium px-0.5 h-fit w-fit rounded-sm border-2 border-zinc-700 select-none">
+          <span class="text-xs bg-zinc-800 font-medium px-0.5 h-fit w-fit rounded-sm border border-zinc-700 select-none">
             {index}.
           </span>
         </li>
@@ -86,8 +96,10 @@ export default function ListItem({
           />
         </li>
         <li
-          class="cursor-pointer bg-zinc-800 rounded-sm border-2 border-zinc-700 hover:border-red-800 "
-          onClick={() => deleteNotes([note])}
+          class="cursor-pointer bg-zinc-800 rounded-sm border-2 border-zinc-700 hover:border-red-800"
+          onClick={() => deleteNotes([note], setNotes, setDeletedNotes)}
+          onMouseOver={() => setIsHoverDelete(true)}
+          onMouseLeave={() => setIsHoverDelete(false)}
         >
           <TrashIcon />
         </li>

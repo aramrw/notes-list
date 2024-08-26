@@ -1,4 +1,6 @@
 import { NoteType } from "../Newtab";
+import { detectBrowser } from "@src/lib/detect-browser";
+import { saveNoteToStorage } from "@src/pages/background";
 
 export function triggerDialog() {
   return new Promise((resolve, reject) => {
@@ -36,7 +38,12 @@ export function triggerDialog() {
   });
 }
 
-export function importData(): Promise<NoteType[]> {
+export default async function importData(): Promise<NoteType[]> {
+  // add fake note on Firefox to instantiate the database if none exist
+  if (detectBrowser().name === "Firefox") {
+    await saveNoteToStorage("firefox");
+  }
+
   return new Promise((resolve, reject) => {
     chrome.storage.local.get("notes", (res) => {
       let err = chrome.runtime.lastError;
@@ -57,7 +64,7 @@ export function importData(): Promise<NoteType[]> {
 
           // Ensure importedNotes is not null and handle duplicates
           let newNotes = [...notes];
-          const existingTexts = new Set(notes.map(note => note.text));
+          const existingTexts = new Set(notes.map((note) => note.text));
 
           for (const importedNote of importedNotes as NoteType[]) {
             if (!existingTexts.has(importedNote.text)) {
@@ -69,7 +76,9 @@ export function importData(): Promise<NoteType[]> {
           // Save the updated notes back to storage
           chrome.storage.local.set({ notes: newNotes }, () => {
             if (chrome.runtime.lastError) {
-              console.error(`Database Error While Importing Notes: ${chrome.runtime.lastError.message}`);
+              console.error(
+                `Database Error While Importing Notes: ${chrome.runtime.lastError.message}`
+              );
               return reject(chrome.runtime.lastError);
             }
 
@@ -84,4 +93,3 @@ export function importData(): Promise<NoteType[]> {
     });
   });
 }
-

@@ -1,6 +1,9 @@
+import { detectBrowser } from "@src/lib/detect-browser";
 import clsx from "clsx";
-import { Accessor, createSignal, onMount, Setter } from "solid-js";
-import { handleAddNote, NoteType } from "../Newtab";
+import { Accessor, Setter, createSignal } from "solid-js";
+import { NoteType } from "../Newtab";
+import { deleteNotesForever } from "../utils/db-notes";
+import { handleAddNote } from "../utils/handle-add-note";
 import TrashIcon from "./icons/trash";
 
 export async function fetchDeletedNotes() {
@@ -46,12 +49,10 @@ export default function DeletedNotesModal({
   currentNotes,
   deletedNotes,
   setDeletedNotes,
-  deleteNotesForever,
   setNotes,
 }: {
   currentNotes: Accessor<NoteType[]>;
   deletedNotes: Accessor<NoteType[]>;
-  deleteNotesForever: (notesToDelete: NoteType[]) => void;
   setDeletedNotes: Setter<NoteType[]>;
   setNotes: Setter<NoteType[]>;
 }) {
@@ -61,8 +62,9 @@ export default function DeletedNotesModal({
     return (
       <li
         class={clsx(
-          "w-full text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer border-2 border-zinc-700 px-1 py-2 rounded-sm hover:border-blue-400",
-          isHoverDelete() && "hover:border-red-800"
+          "w-full h-8 min-h-8 text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer border border-zinc-700 px-1 py-1.5 rounded-sm hover:border-blue-400",
+          isHoverDelete() && "hover:border-red-800",
+          detectBrowser().name === "Chrome" && "py-2.5"
         )}
         onClick={() => {
           reviveDeletedNotes([note]).then((updatedDeletedNotes) => {
@@ -71,17 +73,19 @@ export default function DeletedNotesModal({
           });
         }}
       >
-        <div class="max-w-40 flex flex-row justify-self-start items-center gap-1.5 overflow-x-hidden text-nowrap">
-          <span class="text-xs bg-zinc-800 rounded-sm font-medium px-0.5 border-2 border-zinc-700 ml-0.5 select-none">
+        <div class="max-w-32 flex flex-row justify-self-start items-center gap-1.5 overflow-x-hidden text-nowrap">
+          <span class="text-xs bg-zinc-800 rounded-sm font-medium px-0.5 border border-zinc-700 ml-0.5 select-none">
             {index}.
           </span>
           <span class="text-xl ml-1">{note.text}</span>
         </div>
         <span
-          class="cursor-pointer bg-zinc-800 rounded-sm border-2 border-zinc-700 mr-1 hover:border-red-800"
+          class="w-fit cursor-pointer bg-zinc-800 rounded-sm border border-zinc-700 mr-1 hover:border-red-800"
           onClick={(e: Event) => {
             e.stopPropagation();
-            deleteNotesForever([note]);
+            deleteNotesForever([note]).then((dNotes) => {
+              setDeletedNotes(dNotes);
+            });
           }}
           onMouseOver={() => setIsHoverDelete(true)}
           onMouseLeave={() => setIsHoverDelete(false)}
@@ -93,7 +97,7 @@ export default function DeletedNotesModal({
   }
 
   return (
-    <ul class="min-w-40 w-fit h-full flex flex-col justify-start items-start gap-2 py-1 px-3 max-h-[30rem] overflow-y-scroll">
+    <ul class="min-w-52 max-w-52 h-full flex flex-col justify-start items-start gap-2 py-1 px-3 max-h-[30rem] overflow-y-scroll border-r-2 border-r-zinc-700">
       {deletedNotes().map((note, index) => {
         return <DeletedNoteItem note={note} index={index} />;
       })}

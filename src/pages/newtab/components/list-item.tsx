@@ -5,6 +5,7 @@ import { updateNoteInStorage } from "../utils/update-note-in-storage";
 import { createEffect, createSignal, Setter } from "solid-js";
 import { cn } from "@src/lib/utils";
 import clsx from "clsx";
+import clearSelection from "../utils/clear-selection";
 
 export default function ListItem({
   note,
@@ -52,8 +53,8 @@ export default function ListItem({
         class={clsx(
           "max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 border border-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
           !isDisabled() && "border-blue-400",
-          isConfirmedChange() && "border-green-400 animate-pulse",
-          isHoverDelete() && "border-red-800"
+          isConfirmedChange() && "border-green-500 animate-pulse",
+          isHoverDelete() && "hover:border-red-800"
         )}
         onClick={() => {
           setTimeout(() => {
@@ -74,7 +75,10 @@ export default function ListItem({
           onDblClick={() => {
             setIsDisabled(false);
           }}
-          onMouseLeave={() => setIsDisabled(true)}
+          onMouseLeave={() => {
+            clearSelection();
+            setIsDisabled(true);
+          }}
         >
           <input
             class={cn(

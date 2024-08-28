@@ -85,6 +85,7 @@ export default function DeletedNotesModal({
             e.stopPropagation();
             deleteNotesForever([note]).then((dNotes) => {
               setDeletedNotes(dNotes);
+							setIsHoverDelete(false)
             });
           }}
           onMouseOver={() => setIsHoverDelete(true)}

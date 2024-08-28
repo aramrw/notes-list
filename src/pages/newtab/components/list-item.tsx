@@ -52,7 +52,7 @@ export default function ListItem({
       <ul
         class={clsx(
           "max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 border border-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
-          !isDisabled() && "border-blue-400",
+          !isDisabled() && "border-zinc-400",
           isConfirmedChange() && "border-green-500 animate-pulse",
           isHoverDelete() && "hover:border-red-800"
         )}

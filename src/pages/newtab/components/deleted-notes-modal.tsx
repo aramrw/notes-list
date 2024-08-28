@@ -62,7 +62,7 @@ export default function DeletedNotesModal({
     return (
       <li
         class={clsx(
-          "w-full h-8 min-h-8 text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer border border-zinc-700 px-1 py-1.5 rounded-sm hover:border-blue-400",
+          "w-full h-8 min-h-8 text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer border border-zinc-700 px-1 py-1.5 rounded-sm hover:border-zinc-400",
           isHoverDelete() && "hover:border-red-800",
           detectBrowser().name === "Chrome" && "py-2.5"
         )}

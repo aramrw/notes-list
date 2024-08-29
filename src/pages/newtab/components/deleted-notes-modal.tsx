@@ -62,9 +62,9 @@ export default function DeletedNotesModal({
     return (
       <li
         class={clsx(
-          "w-full h-8 min-h-8 text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer border border-zinc-700 px-1 py-1.5 rounded-sm hover:border-zinc-400",
-          isHoverDelete() && "hover:border-red-800",
-          detectBrowser().name === "Chrome" && "py-2.5"
+          "w-full h-8 min-h-8 text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer outline-1 outline-dashed outline-zinc-700 px-1 py-1.5 rounded-sm hover:outline-zinc-400 opacity-60 hover:opacity-100",
+          detectBrowser().name === "Chrome" && "py-2.5",
+          isHoverDelete() && "hover:outline-red-700 hover:animate-pulse",
         )}
         onClick={() => {
           reviveDeletedNotes([note]).then((updatedDeletedNotes) => {
@@ -74,18 +74,19 @@ export default function DeletedNotesModal({
         }}
       >
         <div class="max-w-32 flex flex-row justify-self-start items-center gap-1.5 overflow-x-hidden text-nowrap">
-          <span class="text-xs bg-zinc-800 rounded-sm font-medium px-0.5 border border-zinc-700 ml-0.5 select-none">
+          <span
+            class="text-xs bg-zinc-800 rounded-sm font-medium px-0.5 outline-1 outline-dashed outline-zinc-700 ml-0.5 select-none">
             {index}.
           </span>
           <span class="text-xl ml-1">{note.text}</span>
         </div>
         <span
-          class="w-fit cursor-pointer bg-zinc-800 rounded-sm border border-zinc-700 mr-1 hover:border-red-800"
+          class="w-fit cursor-pointer bg-zinc-800 rounded-sm outline-1 outline-dashed outline-zinc-700 mr-1 hover:outline-red-700"
           onClick={(e: Event) => {
             e.stopPropagation();
             deleteNotesForever([note]).then((dNotes) => {
               setDeletedNotes(dNotes);
-							setIsHoverDelete(false)
+              setIsHoverDelete(false)
             });
           }}
           onMouseOver={() => setIsHoverDelete(true)}

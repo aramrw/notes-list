@@ -20,10 +20,10 @@ fs.readFile("dist/manifest.json", "utf8", (err, data) => {
 
   // Add the scripts property to the background section & remove chrome service worker
   if (manifest.background) {
-    manifest.background.scripts = ["src/pages/background/index.ts"];
+    manifest.background.scripts = ["service-worker-loader.js"];
     delete manifest.background.service_worker;
   } else {
-    manifest.background = { scripts: ["src/pages/background/index.ts"] };
+    manifest.background = { scripts: ["service-worker-loader.js"] };
   }
 
   // Add the firefox gecko id

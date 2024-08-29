@@ -51,10 +51,10 @@ export default function ListItem({
       )}
       <ul
         class={clsx(
-          "max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 border border-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
-          !isDisabled() && "border-zinc-400",
-          isConfirmedChange() && "border-green-500 animate-pulse",
-          isHoverDelete() && "hover:border-red-800"
+          "max-h-fit max-w-60 min-w-60 flex flex-row justify-between items-center gap-2 outline outline-1 outline-zinc-700 rounded-sm py-0.5 px-2 bg-zinc-900",
+          !isDisabled() && "outline-zinc-400",
+          isConfirmedChange() && "outline-green-500 animate-pulse",
+          isHoverDelete() && "hover:outline-red-800"
         )}
         onClick={() => {
           setTimeout(() => {
@@ -71,7 +71,7 @@ export default function ListItem({
           </span>
         </li>
         <li
-          class="text-nowrap overflow-hidden select-none animate-in cursor-pointer"
+          class="h-fit max-h-fit text-nowrap overflow-hidden select-none animate-in cursor-pointer"
           onDblClick={() => {
             setIsDisabled(false);
           }}
@@ -82,7 +82,7 @@ export default function ListItem({
         >
           <input
             class={cn(
-              "bg-zinc-900 text-white text-center max-w-44 outline-none cursor-pointer"
+              "h-fit max-h-fit bg-zinc-900 text-white text-center max-w-44 outline-none cursor-pointer"
             )}
             value={note.text}
             readOnly={isDisabled()}
@@ -100,7 +100,7 @@ export default function ListItem({
           />
         </li>
         <li
-          class="cursor-pointer bg-zinc-800 rounded-sm border-2 border-zinc-700 hover:border-red-800"
+          class="cursor-pointer bg-zinc-800 rounded-sm outline outline-1 outline-zinc-700 hover:outline-red-800"
           onClick={() => deleteNotes([note], setNotes, setDeletedNotes)}
           onMouseOver={() => setIsHoverDelete(true)}
           onMouseLeave={() => setIsHoverDelete(false)}

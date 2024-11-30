@@ -21,8 +21,8 @@ export async function getAllNotes() {
 
 export async function deleteNotesFromDB(
   notesToDelete: NoteType[],
-  setNotes: Setter<NoteType[]>,
-  setDeletedNotes: Setter<NoteType[]>
+  setNotes: Setter<NoteType[] | undefined>,
+  setDeletedNotes: Setter<NoteType[] | undefined>
 ) {
   chrome.storage.local.get("notes", (result) => {
     const currentNotes = result.notes || [];
@@ -31,14 +31,20 @@ export async function deleteNotesFromDB(
         !notesToDelete.some((toDelete) => toDelete.text === note.text)
     );
     chrome.storage.local.set({ notes: newNotes });
-    setNotes(newNotes);
+    // if setter is passed update the ui
+    if (setNotes) {
+      setNotes(newNotes);
+    }
   });
 
   chrome.storage.local.get("deleted", (res) => {
     const deletedNotes: NoteType[] = res.deleted || [];
     deletedNotes.push(...notesToDelete);
     chrome.storage.local.set({ deleted: deletedNotes });
-    setDeletedNotes(deletedNotes);
+    // if setter is passed update the trashbin ui
+    if (setDeletedNotes) {
+      setDeletedNotes(deletedNotes);
+    }
   });
 }
 

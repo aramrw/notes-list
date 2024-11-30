@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(() => {
 export function saveNoteToStorage(text: string) {
   return new Promise<NoteType>((resolve, reject) => {
     if (text === "") {
-      reject("Not Important");
+      reject("text is empty.");
     }
     const newNote: NoteType = { text, timestamp: Date.now() };
     chrome.storage.local.get("notes", (result) => {
@@ -35,7 +35,7 @@ export function saveNoteToStorage(text: string) {
           }
         });
       } else {
-        reject("Not Important");
+        reject("duplicate found; skipping.");
       }
     });
   });
@@ -61,9 +61,7 @@ chrome.commands.onCommand.addListener((command) => {
           // results is an array of InjectionResultDetails
           if (results && results[0] && results[0].result) {
             saveNoteToStorage(results[0].result).catch((e) => {
-              if (e !== "Not Important") {
-                console.error(e);
-              }
+              console.error(e);
             });
           }
         })

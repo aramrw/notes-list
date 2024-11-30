@@ -33,7 +33,7 @@ export function exportData() {
         const downloadLink = document.createElement("a");
         downloadLink.style.opacity = "1";
         downloadLink.href = url;
-        downloadLink.download = `qnt_backup_${majorV}.${minorV}.${patchV}.${labelV}`;
+        downloadLink.download = `qnt_backup_${majorV}.${minorV}.${patchV}.${labelV}.json`;
         downloadLink.click();
 
         // Clean up the URL object

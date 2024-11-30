@@ -1,7 +1,7 @@
 {
 	"name": "solid-chrome-extension-template",
 	"displayName": "Quick Note Taker",
-	"version": "0.204212.1",
+	"version": "0.205.1",
 	"description": "Easily take notes for language learning.",
 	"license": "MIT",
 	"repository": {

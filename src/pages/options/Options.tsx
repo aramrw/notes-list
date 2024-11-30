@@ -62,7 +62,7 @@ export default function SettingsPage() {
 
       <main class="w-full max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
-          <div class="border-4 border-dashed border-gray-200 rounded-lg h-60 p-4">
+          <div class=" rounded-lg h-60 p-4">
             <h2 class="text-2xl font-semibold mb-4 bg-zinc-900 w-fit px-1 rounded-sm border border-zinc-700">
               General Settings
             </h2>

@@ -1,6 +1,8 @@
 import { NoteType } from "../Newtab";
 import { detectBrowser } from "@src/lib/detect-browser";
 import { saveNoteToStorage } from "@src/pages/background";
+import { deleteNotesForever, deleteNotesFromDB } from "./db-notes";
+import { fetchDeletedNotes } from "../components/deleted-notes-modal";
 
 export function triggerDialog() {
   return new Promise((resolve, reject) => {
@@ -41,7 +43,11 @@ export function triggerDialog() {
 export default async function importData(): Promise<NoteType[]> {
   // add fake note on Firefox to instantiate the database if none exist
   if (detectBrowser().name === "Firefox") {
-    await saveNoteToStorage("firefox");
+    await saveNoteToStorage("firefox").catch((e) => {
+      if (e !== "duplicate found; skipping.") {
+        console.error(e);
+      }
+    });
   }
 
   return new Promise((resolve, reject) => {
@@ -52,6 +58,7 @@ export default async function importData(): Promise<NoteType[]> {
         return reject(err);
       }
 
+      // delete the "Firefox" note.
       let notes: NoteType[] = res.notes || [];
 
       // Trigger the file import dialog
@@ -82,7 +89,6 @@ export default async function importData(): Promise<NoteType[]> {
               return reject(chrome.runtime.lastError);
             }
 
-            console.log(newNotes);
             resolve(newNotes);
           });
         })

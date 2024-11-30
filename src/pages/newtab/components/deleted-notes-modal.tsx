@@ -56,16 +56,15 @@ export default function DeletedNotesModal({
   setDeletedNotes: Setter<NoteType[]>;
   setNotes: Setter<NoteType[]>;
 }) {
-  const [isHoverDelete, setIsHoverDelete] = createSignal<boolean>(false);
-
   function DeletedNoteItem({ note, index }: { note: NoteType; index: number }) {
+    const [isHoverDelete, setIsHoverDelete] = createSignal<boolean>(false);
     return (
       <li
         class={clsx(
           "w-full h-8 min-h-8 text-lg flex flex-row justify-between items-center gap-2 overflow-hidden cursor-pointer outline-1 outline-dashed outline-zinc-700 px-1 py-1.5 rounded-sm hover:outline-zinc-400 opacity-60 hover:opacity-100",
           detectBrowser().name === "Chrome" && "py-2.5",
-          isHoverDelete() && "hover:outline-red-700 hover:animate-pulse",
         )}
+        style={isHoverDelete() && { "outline-color": "#b91c1c" }}
         onClick={() => {
           reviveDeletedNotes([note]).then((updatedDeletedNotes) => {
             setDeletedNotes(updatedDeletedNotes);
